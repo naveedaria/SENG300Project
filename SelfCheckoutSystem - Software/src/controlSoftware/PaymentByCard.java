@@ -4,23 +4,27 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.Calendar;
+import java.util.HashMap;
 
 import org.lsmr.selfcheckout.BlockedCardException;
 import org.lsmr.selfcheckout.Card;
 import org.lsmr.selfcheckout.ChipFailureException;
 import org.lsmr.selfcheckout.InvalidPINException;
 import org.lsmr.selfcheckout.MagneticStripeFailureException;
+import org.lsmr.selfcheckout.TapFailureException;
 import org.lsmr.selfcheckout.Card.CardData;
 import org.lsmr.selfcheckout.devices.CardReader;
 import org.lsmr.selfcheckout.devices.SelfCheckoutStation;
 import org.lsmr.selfcheckout.devices.SimulationException;
 import org.lsmr.selfcheckout.external.CardIssuer;
 
+
 public class PaymentByCard {
 	private CardReader cardReader;
 	private Card inputCard;
 	private String pin;
 	private CardIssuer cardIssuer;
+	private HashMap<String, String > cardDatabase = new HashMap<>();
 	
 	/**
 	 * Constructor 
@@ -33,6 +37,20 @@ public class PaymentByCard {
 		selfCheckout.cardReader.register(cardReaderListener);
 		this.cardReader = selfCheckout.cardReader;
 		this.cardIssuer = new CardIssuer(cardCompany);
+		
+		
+		//registering first card
+		String firstCardNum = "123456789";
+		String firstCardPin = "1234";
+		
+		cardDatabase.put(firstCardNum, firstCardPin);
+		
+		
+		//registering second card
+		String secondCardNum = "987654321";
+		String secondCardPin = "4321";
+				
+		cardDatabase.put(firstCardNum, firstCardPin);
 	}
 	
 	/**
@@ -58,15 +76,22 @@ public class PaymentByCard {
 	 * 	@param cardLimit 
 	 * 		  For a credit card, this represents the credit limit. For a debit
 	 *            card, this is how much money is available.
+	 * @throws InvalidPINException 
 	 */
 	public void detectCard(String type, String number, String cardholder, String cvv, String pin, boolean isTapEnabled,
-			boolean hasChip, Calendar expiry, BigDecimal cardLimit) {
-		try {
-			this.inputCard = new Card(type, number, cardholder, cvv, pin, isTapEnabled, hasChip);
-			this.pin = pin;
-			this.cardIssuer.addCardData(number, cardholder, expiry, cvv, cardLimit);
-		}catch(SimulationException e) {
-			throw e;
+			boolean hasChip, Calendar expiry, BigDecimal cardLimit) throws InvalidPINException {
+		
+		
+		if(cardDatabase.get(number).equals(pin)) {
+			try {
+				this.inputCard = new Card(type, number, cardholder, cvv, pin, isTapEnabled, hasChip);
+				this.pin = pin;
+				this.cardIssuer.addCardData(number, cardholder, expiry, cvv, cardLimit);
+			}catch(SimulationException e) {
+				throw e;
+			}
+		}else {
+			throw new InvalidPINException();
 		}
 	}
 	
@@ -82,26 +107,29 @@ public class PaymentByCard {
 	 * 		  True if payment successfully processed, false otherwise. 
 	 */
 	public boolean tapToPay(BigDecimal amount, boolean insertCard, String pinInput) throws ChipFailureException, IOException {
-		boolean paymentSuccessfullyProcessed = true; 
-		try {
-			CardData data= this.cardReader.tap(this.inputCard);
-			if (data==null) {
-				paymentSuccessfullyProcessed = false; 
-				System.out.println("Tap is not enabled.\n");
+		
+		
+		
+			boolean paymentSuccessfullyProcessed = true; 
+			try {
+				CardData data= this.cardReader.tap(this.inputCard);
+				if (data==null) {
+					paymentSuccessfullyProcessed = false; 
+					System.out.println("Tap is not enabled.\n");
+					return paymentSuccessfullyProcessed;
+				}
+				if (insertCard==true) {
+					validateCard(pinInput);
+				}
+				paymentSuccessfullyProcessed = authorizeCardPayment(data, amount);
 				return paymentSuccessfullyProcessed;
+			}catch(ChipFailureException e) {
+				throw e;
+			}catch(BlockedCardException e) {
+				throw e; 
+			}catch(InvalidPINException e) {
+				throw e;
 			}
-			if (insertCard==true) {
-				validateCard(pinInput);
-			}
-			paymentSuccessfullyProcessed = authorizeCardPayment(data, amount);
-			return paymentSuccessfullyProcessed;
-		}catch(ChipFailureException e) {
-			throw e;
-		}catch(BlockedCardException e) {
-			throw e; 
-		}catch(InvalidPINException e) {
-			throw e;
-		}
 
 		//set change to 0 in ControlSoftware if true is returned
 	}
@@ -121,21 +149,25 @@ public class PaymentByCard {
 	 */
 	public boolean swipeToPay(BufferedImage signature, BigDecimal amount, boolean insertCard, String pinInput) throws MagneticStripeFailureException, IOException{
 		boolean paymentSuccessfullyProcessed = true; 
-		try {
-			CardData data= this.cardReader.swipe(this.inputCard, signature);
-			
-			if (insertCard==true) {
-				validateCard(pinInput);
+		
+		
+		
+			try {
+				CardData data= this.cardReader.swipe(this.inputCard, signature);
+				
+				if (insertCard==true) {
+					validateCard(pinInput);
+				}
+				paymentSuccessfullyProcessed = authorizeCardPayment(data, amount);
+				return paymentSuccessfullyProcessed;
+			}catch(InvalidPINException e) {
+				throw e;
+			}catch(IOException e) {
+				throw new MagneticStripeFailureException();
 			}
-			paymentSuccessfullyProcessed = authorizeCardPayment(data, amount);
-			return paymentSuccessfullyProcessed;
-		}catch(InvalidPINException e) {
-			throw e;
-		}catch(IOException e) {
-			throw new MagneticStripeFailureException();
-		}
 
-		//set change to 0 in ControlSoftware if true is returned
+
+			//set change to 0 in ControlSoftware if true is returned
 	}
 	
 	/**
@@ -185,21 +217,6 @@ public class PaymentByCard {
 		}
 	}
 	
-	// FOR THIRD ITERATION
-//	public boolean cancelReleasePayment(int holdNumber, CardData data) throws IOException {
-//		try {
-//			boolean checkReleaseHold = cardIssuer.releaseHold(data.getNumber(), holdNumber);
-//			if (checkReleaseHold == false) {
-//				System.out.println("Releasing hold on amount on card failed.\n");
-//				// failed release of holds
-//				return false;
-//			}
-//			// successful release of holds
-//			else return true;
-//		}
-//		catch(SimulationException e) {
-//			throw e;
-//		}
-//	}
+
 	
 }

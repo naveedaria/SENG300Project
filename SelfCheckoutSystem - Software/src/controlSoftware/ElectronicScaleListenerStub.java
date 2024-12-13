@@ -36,7 +36,7 @@ public class ElectronicScaleListenerStub implements ElectronicScaleListener {
 	@Override
 	public void weightChanged(ElectronicScale scale, double weightInGrams) {
 		// TODO Auto-generated method stub
-		this.currentWeight += weightInGrams;
+		this.currentWeight = weightInGrams;
 		System.out.println("Weight: " + this.currentWeight);
 		this.numberOfItems += 1;
 	}

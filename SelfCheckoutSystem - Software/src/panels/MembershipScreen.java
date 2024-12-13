@@ -8,7 +8,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 import javax.swing.LayoutStyle.ComponentPlacement;
 
-import driver.CommandLineDriver;
+import driver.GUIDriver;
 
 import javax.swing.JTextArea;
 import java.awt.Color;
@@ -111,13 +111,13 @@ public class MembershipScreen extends JPanel {
 	
 					
 					// check if the given member information is valid 
-					String validatedNum = CommandLineDriver.controlSoftware.useMembershipCard(membershipNum, customerName);
-					String validatedName = CommandLineDriver.controlSoftware.getMemberName(membershipNum, customerName);
+					String validatedNum = GUIDriver.controlSoftware.useMembershipCard(membershipNum, customerName);
+					String validatedName = GUIDriver.controlSoftware.getMemberName(membershipNum, customerName);
 					
 					
 					if(membershipNum.equals(validatedNum) && customerName.equals(validatedName)) {
 						showWelcomeMessage();
-						CommandLineDriver.goToScreen("main");
+						GUIDriver.goToScreen("main");
 					}
 
 					else {
@@ -143,7 +143,7 @@ public class MembershipScreen extends JPanel {
 	private class GotoMainScreen implements ActionListener{
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			CommandLineDriver.goToScreen("main");
+			GUIDriver.goToScreen("main");
 		}
 	}
 	

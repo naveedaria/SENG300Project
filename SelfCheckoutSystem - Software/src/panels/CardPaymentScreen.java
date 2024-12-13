@@ -4,7 +4,7 @@ import javax.swing.JPanel;
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
 
-import driver.CommandLineDriver;
+import driver.GUIDriver;
 
 import javax.swing.JLabel;
 import javax.swing.JButton;
@@ -29,10 +29,6 @@ public class CardPaymentScreen extends JPanel {
 			
 		
 		JButton payWithCredit = new JButton("Credit Card");
-		
-		
-		JLabel lblNewLabel_1 = new JLabel("Please turn your attention to the card reader to pay");
-		lblNewLabel_1.setVisible(false);
 		JButton payWithDebit = new JButton("Debit Card");
 		
 		JLabel cardMethodLabel = new JLabel("Please choose your method of card payment");
@@ -40,38 +36,32 @@ public class CardPaymentScreen extends JPanel {
 		groupLayout.setHorizontalGroup(
 			groupLayout.createParallelGroup(Alignment.TRAILING)
 				.addGroup(groupLayout.createSequentialGroup()
-					.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
-						.addGroup(groupLayout.createSequentialGroup()
-							.addGap(337)
-							.addComponent(lblNewLabel))
-						.addGroup(groupLayout.createSequentialGroup()
-							.addGap(229)
-							.addComponent(cardMethodLabel))
-						.addGroup(groupLayout.createSequentialGroup()
-							.addGap(208)
-							.addComponent(lblNewLabel_1)))
-					.addContainerGap(272, Short.MAX_VALUE))
+					.addGap(114)
+					.addComponent(payWithDebit, GroupLayout.PREFERRED_SIZE, 209, GroupLayout.PREFERRED_SIZE)
+					.addPreferredGap(ComponentPlacement.RELATED, 178, Short.MAX_VALUE)
+					.addComponent(payWithCredit, GroupLayout.PREFERRED_SIZE, 198, GroupLayout.PREFERRED_SIZE)
+					.addGap(158))
 				.addGroup(groupLayout.createSequentialGroup()
-					.addGap(160)
-					.addComponent(payWithDebit, GroupLayout.PREFERRED_SIZE, 113, GroupLayout.PREFERRED_SIZE)
-					.addPreferredGap(ComponentPlacement.RELATED, 227, Short.MAX_VALUE)
-					.addComponent(payWithCredit, GroupLayout.PREFERRED_SIZE, 112, GroupLayout.PREFERRED_SIZE)
-					.addGap(188))
+					.addContainerGap(339, Short.MAX_VALUE)
+					.addComponent(cardMethodLabel)
+					.addGap(304))
+				.addGroup(groupLayout.createSequentialGroup()
+					.addContainerGap(412, Short.MAX_VALUE)
+					.addComponent(lblNewLabel)
+					.addGap(377))
 		);
 		groupLayout.setVerticalGroup(
 			groupLayout.createParallelGroup(Alignment.LEADING)
 				.addGroup(groupLayout.createSequentialGroup()
-					.addGap(37)
+					.addGap(53)
 					.addComponent(lblNewLabel)
-					.addGap(27)
+					.addPreferredGap(ComponentPlacement.UNRELATED)
 					.addComponent(cardMethodLabel)
-					.addPreferredGap(ComponentPlacement.RELATED)
-					.addComponent(lblNewLabel_1)
-					.addGap(46)
+					.addGap(89)
 					.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
-						.addComponent(payWithCredit, GroupLayout.PREFERRED_SIZE, 121, GroupLayout.PREFERRED_SIZE)
-						.addComponent(payWithDebit, GroupLayout.PREFERRED_SIZE, 122, GroupLayout.PREFERRED_SIZE))
-					.addContainerGap(315, Short.MAX_VALUE))
+						.addComponent(payWithCredit, GroupLayout.PREFERRED_SIZE, 245, GroupLayout.PREFERRED_SIZE)
+						.addComponent(payWithDebit, GroupLayout.PREFERRED_SIZE, 249, GroupLayout.PREFERRED_SIZE))
+					.addContainerGap(163, Short.MAX_VALUE))
 		);
 		setLayout(groupLayout);
 
@@ -85,10 +75,7 @@ public class CardPaymentScreen extends JPanel {
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
 				
-				lblNewLabel_1.setVisible(true);
-				payWithCredit.setVisible(false);			//methods when Debit button is pressed
-				payWithDebit.setVisible(false);
-				cardMethodLabel.setVisible(false);
+				GUIDriver.goToScreen("selectmethod");
 			}
 			
 		}
@@ -99,10 +86,7 @@ public class CardPaymentScreen extends JPanel {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				lblNewLabel_1.setVisible(true);
-				payWithCredit.setVisible(false);		//methods when credit button is pressed
-				payWithDebit.setVisible(false);
-				cardMethodLabel.setVisible(false);
+				GUIDriver.goToScreen("selectmethod");
 			}
 		}
 		

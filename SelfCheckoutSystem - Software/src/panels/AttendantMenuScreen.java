@@ -13,7 +13,7 @@ import javax.swing.JButton;
 import javax.swing.LayoutStyle.ComponentPlacement;
 
 import attendant.StationControl;
-import driver.CommandLineDriver;
+import driver.GUIDriver;
 
 
 public class AttendantMenuScreen extends JPanel {
@@ -70,26 +70,40 @@ public class AttendantMenuScreen extends JPanel {
 		 banknotesDispenserStateLbl = new JLabel("Banknote dispenser state: filled");
 		
 		JButton lookupItemBtn = new JButton("Look Up Item");
+		
+		JButton shutdownBtn = new JButton("Shutdown station");
 		GroupLayout groupLayout = new GroupLayout(this);
 		groupLayout.setHorizontalGroup(
 			groupLayout.createParallelGroup(Alignment.LEADING)
 				.addGroup(groupLayout.createSequentialGroup()
-					.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
-						.addGroup(Alignment.TRAILING, groupLayout.createSequentialGroup()
-							.addContainerGap()
+					.addGroup(groupLayout.createParallelGroup(Alignment.TRAILING)
+						.addGroup(groupLayout.createSequentialGroup()
+							.addContainerGap(463, Short.MAX_VALUE)
+							.addComponent(btnNewButton_8))
+						.addGroup(groupLayout.createSequentialGroup()
+							.addGap(215)
+							.addComponent(lblNewLabel))
+						.addGroup(groupLayout.createSequentialGroup()
 							.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
 								.addGroup(groupLayout.createSequentialGroup()
-									.addComponent(blockBtn)
-									.addGap(18)
-									.addComponent(unblockBtn))
-								.addGroup(groupLayout.createSequentialGroup()
-									.addComponent(btnNewButton_4)
-									.addGap(18)
-									.addComponent(btnNewButton_5))
-								.addComponent(blockStateLbl)
-								.addComponent(paperStateLbl)
-								.addComponent(inkStateLbl))
-							.addPreferredGap(ComponentPlacement.RELATED, 21, Short.MAX_VALUE)
+									.addContainerGap()
+									.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
+										.addGroup(groupLayout.createSequentialGroup()
+											.addComponent(blockBtn)
+											.addGap(18)
+											.addComponent(unblockBtn))
+										.addGroup(groupLayout.createSequentialGroup()
+											.addComponent(btnNewButton_4)
+											.addGap(18)
+											.addComponent(btnNewButton_5))
+										.addComponent(blockStateLbl)
+										.addComponent(paperStateLbl)
+										.addComponent(inkStateLbl))
+									.addPreferredGap(ComponentPlacement.RELATED, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+								.addGroup(Alignment.TRAILING, groupLayout.createSequentialGroup()
+									.addContainerGap()
+									.addComponent(lookupItemBtn)
+									.addGap(127)))
 							.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
 								.addComponent(coinDispenserStateLbl)
 								.addComponent(banknoteStorageStateLbl)
@@ -102,16 +116,8 @@ public class AttendantMenuScreen extends JPanel {
 									.addComponent(refillCoinsBtn)
 									.addGap(18)
 									.addComponent(refillBanknotesBtn))
-								.addComponent(banknotesDispenserStateLbl)))
-						.addGroup(Alignment.TRAILING, groupLayout.createSequentialGroup()
-							.addContainerGap(478, Short.MAX_VALUE)
-							.addComponent(btnNewButton_8))
-						.addGroup(groupLayout.createSequentialGroup()
-							.addContainerGap()
-							.addComponent(lookupItemBtn))
-						.addGroup(groupLayout.createSequentialGroup()
-							.addGap(215)
-							.addComponent(lblNewLabel)))
+								.addComponent(banknotesDispenserStateLbl)
+								.addComponent(shutdownBtn))))
 					.addContainerGap())
 		);
 		groupLayout.setVerticalGroup(
@@ -131,7 +137,9 @@ public class AttendantMenuScreen extends JPanel {
 						.addComponent(emptyCoinsBtn)
 						.addComponent(emptyBankotesBtn))
 					.addPreferredGap(ComponentPlacement.UNRELATED)
-					.addComponent(lookupItemBtn)
+					.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
+						.addComponent(lookupItemBtn)
+						.addComponent(shutdownBtn))
 					.addGap(19)
 					.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
 						.addComponent(blockStateLbl)
@@ -161,6 +169,8 @@ public class AttendantMenuScreen extends JPanel {
 		btnNewButton_4.addActionListener(new AddInk());
 		btnNewButton_5.addActionListener(new AddPaper());
 		lookupItemBtn.addActionListener(new GoToLookupScreen());
+		shutdownBtn.addActionListener(new ShutdownStation());
+		
 	}
 	
 	private class BlockStation implements ActionListener{
@@ -170,14 +180,15 @@ public class AttendantMenuScreen extends JPanel {
 			// TODO Auto-generated method stub
 			blockStateLbl.setText("Station state: blocked");
 			
-			CommandLineDriver.isBlocked = true;
+			GUIDriver.isBlocked = true;
 			MainScreen.status.setText("Station state: Blocked");
 			MainScreen.status.setForeground(Color.red);
-			CommandLineDriver.blockStation.isBlocked = true;
+			GUIDriver.blockStation.isBlocked = true;
 			
 		}
 		
 	}
+	
 	
 	private class UnblockStation implements ActionListener{
 
@@ -185,11 +196,11 @@ public class AttendantMenuScreen extends JPanel {
 		public void actionPerformed(ActionEvent e) {
 			// TODO Auto-generated method stub
 			blockStateLbl.setText("Station state: unblocked");
-			CommandLineDriver.isBlocked = false;
+			GUIDriver.isBlocked = false;
 			MainScreen.status.setText("Station state: Unblocked");
 			MainScreen.status.setForeground(Color.green);
 			
-			CommandLineDriver.blockStation.isBlocked = false;
+			GUIDriver.blockStation.isBlocked = false;
 			
 		}
 		
@@ -244,7 +255,7 @@ public class AttendantMenuScreen extends JPanel {
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			// TODO Auto-generated method stub
-			CommandLineDriver.goToScreen("lookup");
+			GUIDriver.goToScreen("lookup");
 			
 		}
 		
@@ -256,7 +267,7 @@ public class AttendantMenuScreen extends JPanel {
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			// TODO Auto-generated method stub
-			CommandLineDriver.goToScreen("main");
+			GUIDriver.goToScreen("main");
 			
 		}
 		
@@ -270,7 +281,7 @@ public class AttendantMenuScreen extends JPanel {
 			int inkAdded = 10;
 			MainScreen.inkLevel += inkAdded;
 			inkStateLbl.setText("Ink state: " + MainScreen.inkLevel);
-			CommandLineDriver.controlSoftware.stationControl.addInkToStation(inkAdded);
+			GUIDriver.controlSoftware.stationControl.addInkToStation(inkAdded);
 			MainScreen.inkLabel.setText("Ink Level: " + MainScreen.inkLevel);
 			
 		}
@@ -285,8 +296,19 @@ public class AttendantMenuScreen extends JPanel {
 			int paperAdded = 10;
 			MainScreen.paperLevel += paperAdded;
 			paperStateLbl.setText("Paper state: " + MainScreen.paperLevel);
-			CommandLineDriver.controlSoftware.stationControl.addInkToStation(paperAdded);
+			GUIDriver.controlSoftware.stationControl.addInkToStation(paperAdded);
 			MainScreen.paperLabel.setText("Paper Level: " + MainScreen.paperLevel);
+		}
+		
+	}
+	
+	private class ShutdownStation implements ActionListener{
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			// TODO Auto-generated method stub
+			
+			GUIDriver.goToScreen("shutdown");
 		}
 		
 	}

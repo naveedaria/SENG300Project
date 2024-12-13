@@ -1,29 +1,156 @@
 package panels;
 
 import javax.swing.JPanel;
-import javax.imageio.ImageIO;
-import javax.swing.GroupLayout;
-import javax.swing.GroupLayout.Alignment;
+import javax.swing.JPasswordField;
 import javax.swing.JLabel;
 import javax.swing.JButton;
-import javax.swing.JTextField;
-import javax.swing.SwingConstants;
-import javax.swing.JCheckBox;
-import javax.swing.LayoutStyle.ComponentPlacement;
-
-import driver.CommandLineDriver;
-
-import javax.swing.JTextPane;
-import java.awt.Color;
+import java.awt.GridBagLayout;
 import java.awt.Image;
+import java.awt.GridBagConstraints;
+import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;
 
+import javax.imageio.ImageIO;
+import javax.swing.GroupLayout;
+import javax.swing.GroupLayout.Alignment;
 import javax.swing.ImageIcon;
+import javax.swing.LayoutStyle.ComponentPlacement;
+import javax.swing.SwingConstants;
+
+import org.lsmr.selfcheckout.Barcode;
+
+import controlSoftware.Receipt;
+
+import driver.GUIDriver;
+import javax.swing.JList;
+import javax.swing.JOptionPane;
+import javax.swing.JTextArea;
+
+import java.awt.Color;
+import java.awt.Font;
+import javax.swing.JTextField;
+import javax.swing.JTextPane;
+
+import driver.GUIDriver;
+import javax.swing.JList;
+import javax.swing.JOptionPane;
+import javax.swing.JTextArea;
+
+import java.awt.Color;
+import java.awt.Font;
+import javax.swing.JTextField;
+
+import driver.GUIDriver;
+import javax.swing.JList;
+import javax.swing.JOptionPane;
+import javax.swing.JTextArea;
+
+import java.awt.Color;
+import java.awt.Font;
+import javax.swing.JTextField;
+
+import driver.GUIDriver;
+import javax.swing.JList;
+import javax.swing.JOptionPane;
+import javax.swing.JTextArea;
+
+import java.awt.Color;
+import java.awt.Font;
+import javax.swing.JTextField;
+
+import driver.GUIDriver;
+import javax.swing.JList;
+import javax.swing.JOptionPane;
+import javax.swing.JTextArea;
+
+import java.awt.Color;
+import java.awt.Font;
+import javax.swing.JTextField;
+
+import driver.GUIDriver;
+import javax.swing.JList;
+import javax.swing.JOptionPane;
+import javax.swing.JTextArea;
+
+import java.awt.Color;
+import java.awt.Font;
+import javax.swing.JTextField;
+
+import driver.GUIDriver;
+import javax.swing.JList;
+import javax.swing.JOptionPane;
+import javax.swing.JTextArea;
+
+import java.awt.Color;
+import java.awt.Font;
+import javax.swing.JTextField;
+
+import driver.GUIDriver;
+import javax.swing.JList;
+import javax.swing.JOptionPane;
+import javax.swing.JTextArea;
+
+import java.awt.Color;
+import java.awt.Font;
+import javax.swing.JTextField;
+
+import driver.GUIDriver;
+import javax.swing.JList;
+import javax.swing.JOptionPane;
+import javax.swing.JTextArea;
+
+import java.awt.Color;
+import java.awt.Font;
+import javax.swing.JTextField;
+
+import driver.GUIDriver;
+import javax.swing.JList;
+import javax.swing.JOptionPane;
+import javax.swing.JTextArea;
+
+import java.awt.Color;
+import java.awt.Font;
+import javax.swing.JTextField;
+
+import driver.GUIDriver;
+import javax.swing.JList;
+import javax.swing.JOptionPane;
+import javax.swing.JTextArea;
+
+import java.awt.Color;
+import java.awt.Font;
+import javax.swing.JTextField;
+
+import driver.GUIDriver;
+import javax.swing.JList;
+import javax.swing.JOptionPane;
+import javax.swing.JTextArea;
+
+import java.awt.Color;
+import java.awt.Font;
+import javax.swing.JTextField;
+
+import driver.GUIDriver;
+import javax.swing.JList;
+import javax.swing.JOptionPane;
+import javax.swing.JTextArea;
+
+import java.awt.Color;
+import java.awt.Font;
+import javax.swing.JTextField;
+
+import driver.GUIDriver;
+import javax.swing.JList;
+import javax.swing.JOptionPane;
+import javax.swing.JTextArea;
+
+import java.awt.Color;
+import java.awt.Font;
+import javax.swing.JTextField;
 
 public class GiftCardPaymentScreen extends JPanel {
 	private JTextField giftcardNumInput;
@@ -184,7 +311,7 @@ public class GiftCardPaymentScreen extends JPanel {
             	// amountAvail (String) variable, and then display it 
             	
             	giftcardNum = giftcardNumInput.getText();
-				BigDecimal amountAvailNum= CommandLineDriver.controlSoftware.getAmountOnGiftCard(giftcardNum);
+				BigDecimal amountAvailNum= GUIDriver.controlSoftware.getAmountOnGiftCard(giftcardNum);
 				if(amountAvailNum.compareTo(new BigDecimal(-1))==0) {
 					amountAvail = "Invalid Gift Card";
 				}else {
@@ -202,7 +329,7 @@ public class GiftCardPaymentScreen extends JPanel {
 
 				BigDecimal newBalanceNum;
 				try {
-					newBalanceNum = CommandLineDriver.controlSoftware.useGiftCard(giftcardNum);
+					newBalanceNum = GUIDriver.controlSoftware.useGiftCard(giftcardNum);
 					if(newBalanceNum.compareTo(new BigDecimal(-1))==0) {
 						newBalance = "Invalid Gift Card";
 					}else {
@@ -215,7 +342,7 @@ public class GiftCardPaymentScreen extends JPanel {
 
 				remainingBalanceOutput.setText(newBalance);
 				
-				BigDecimal amountAvailNum= CommandLineDriver.controlSoftware.getAmountOnGiftCard(giftcardNum);
+				BigDecimal amountAvailNum= GUIDriver.controlSoftware.getAmountOnGiftCard(giftcardNum);
 				amountAvail = amountAvailNum.toString();
 				currentAmountAvailOutput.setText(amountAvail);
 			}
@@ -227,14 +354,14 @@ public class GiftCardPaymentScreen extends JPanel {
 	private class GotoPaymentSelector implements ActionListener{
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			CommandLineDriver.goToScreen("pay");
+			GUIDriver.goToScreen("pay");
 		}
 	}
 	
 	private class GotoAttendant implements ActionListener{
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			CommandLineDriver.goToScreen("attendant");
+			GUIDriver.goToScreen("attendant");
 		}
 	}
 	
@@ -244,10 +371,10 @@ public class GiftCardPaymentScreen extends JPanel {
 			BigDecimal newBalanceBD = new BigDecimal(newBalance);
 			
 			if (newBalanceBD.compareTo(new BigDecimal("0")) == 0){
-				CommandLineDriver.goToScreen("thank");
+				GUIDriver.goToScreen("thank");
 			}
 			else {
-				CommandLineDriver.goToScreen("pay");
+				GUIDriver.goToScreen("pay");
 			}
 			
 		}

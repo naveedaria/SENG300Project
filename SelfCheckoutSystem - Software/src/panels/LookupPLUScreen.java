@@ -8,7 +8,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import javax.swing.JTextField;
 
-import driver.CommandLineDriver;
+import driver.GUIDriver;
 
 
 import javax.swing.JList;
@@ -42,9 +42,9 @@ public class LookupPLUScreen extends JPanel {
 	
 		
 		DefaultListModel<String> listModel = new DefaultListModel<>();
-		listModel.addElement(CommandLineDriver.controlSoftware.shoppingCart.getDescriptionOfPLUProduct(CommandLineDriver.pluItem1));
-		listModel.addElement(CommandLineDriver.controlSoftware.shoppingCart.getDescriptionOfPLUProduct(CommandLineDriver.pluItem2));
-		listModel.addElement(CommandLineDriver.controlSoftware.shoppingCart.getDescriptionOfPLUProduct(CommandLineDriver.pluItem3));
+		listModel.addElement(GUIDriver.controlSoftware.shoppingCart.getDescriptionOfPLUProduct(GUIDriver.pluItem1));
+		listModel.addElement(GUIDriver.controlSoftware.shoppingCart.getDescriptionOfPLUProduct(GUIDriver.pluItem2));
+		listModel.addElement(GUIDriver.controlSoftware.shoppingCart.getDescriptionOfPLUProduct(GUIDriver.pluItem3));
 		
 		JList<String> list = new JList<>(listModel);
 		
@@ -99,7 +99,7 @@ public class LookupPLUScreen extends JPanel {
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			// TODO Auto-generated method stub
-			CommandLineDriver.goToScreen("main");
+			GUIDriver.goToScreen("main");
 			
 		}
 	}
@@ -110,13 +110,13 @@ public class LookupPLUScreen extends JPanel {
 			if(txtEnterPlu.getText().equalsIgnoreCase("4011")) {
 			
 				
-				CommandLineDriver.controlSoftware.scanProduct(CommandLineDriver.b1, 1);
+				GUIDriver.controlSoftware.scanProduct(GUIDriver.b1, 1);
 				MainScreen.updateTransactionFields();
 				txtEnterPlu.setText("Item added succsessfully!");
 				}
 			else if(txtEnterPlu.getText().equalsIgnoreCase("2021")) {
 				
-				CommandLineDriver.controlSoftware.scanProduct(CommandLineDriver.b4, 1);
+				GUIDriver.controlSoftware.scanProduct(GUIDriver.b4, 1);
 				MainScreen.updateTransactionFields();
 				txtEnterPlu.setText("Item added succsessfully!");
 				
@@ -124,7 +124,7 @@ public class LookupPLUScreen extends JPanel {
 
 			else if(txtEnterPlu.getText().equalsIgnoreCase("5552")) {
 				
-				CommandLineDriver.controlSoftware.scanProduct(CommandLineDriver.b5, 1);
+				GUIDriver.controlSoftware.scanProduct(GUIDriver.b5, 1);
 				MainScreen.updateTransactionFields();
 				txtEnterPlu.setText("Item added succsessfully!");
 			}	

@@ -4,6 +4,9 @@ import javax.swing.JPanel;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
@@ -11,7 +14,10 @@ import javax.swing.JLabel;
 import javax.swing.JButton;
 import javax.swing.LayoutStyle.ComponentPlacement;
 
-import driver.CommandLineDriver;
+import org.lsmr.selfcheckout.devices.DisabledException;
+import org.lsmr.selfcheckout.devices.OverloadException;
+
+import driver.GUIDriver;
 
 public class PaymentSelectorScreen extends JPanel {
 
@@ -83,8 +89,15 @@ public class PaymentSelectorScreen extends JPanel {
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			// TODO Auto-generated method stub
-			CommandLineDriver.goToScreen("main");
+	
+			try {
+				GUIDriver.controlSoftware.finishedAddingItems();
+			} catch (IOException | DisabledException | OverloadException e1) {
+			
+				e1.printStackTrace();
+			}
+			GUIDriver.goToScreen("main");
+			
 		}
 		
 	}
@@ -94,8 +107,13 @@ public class PaymentSelectorScreen extends JPanel {
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			// TODO Auto-generated method stub
-			CommandLineDriver.goToScreen("card");
+			try {
+				GUIDriver.controlSoftware.finishedAddingItems();
+			} catch (IOException | DisabledException | OverloadException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+			GUIDriver.goToScreen("card");
 		}
 		
 	}
@@ -106,8 +124,13 @@ public class PaymentSelectorScreen extends JPanel {
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			// TODO Auto-generated method stub
-			CommandLineDriver.goToScreen("giftcard");
+			try {
+				GUIDriver.controlSoftware.finishedAddingItems();
+			} catch (IOException | DisabledException | OverloadException e1) {
+				
+				e1.printStackTrace();
+			}
+			GUIDriver.goToScreen("giftcard");
 		}
 		
 	}
@@ -117,13 +140,33 @@ public class PaymentSelectorScreen extends JPanel {
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			// TODO Auto-generated method stub
-
-			CommandLineDriver.cash.lblNewLabel_2.setText(CommandLineDriver.controlSoftware.paymentTotal.toString());
-			CommandLineDriver.cash.lblNewLabel_3.setText(CommandLineDriver.controlSoftware.paymentTotal.toString());
-			CommandLineDriver.cash.balance = CommandLineDriver.controlSoftware.paymentTotal;
+			try {
+				GUIDriver.controlSoftware.finishedAddingItems();
+			} catch (IOException | DisabledException | OverloadException e1) {
+				
+				e1.printStackTrace();
+			}
 			
-			CommandLineDriver.goToScreen("cash");
+			if(GUIDriver.controlSoftware.shoppingCart.getTotalPayment().compareTo(new BigDecimal(0)) == 0) {
+				GUIDriver.cash.lblNewLabel_8.setText(new BigDecimal(-1.0).multiply(GUIDriver.cash.balance).setScale(2, RoundingMode.HALF_UP).toString());
+				GUIDriver.cash.btnNewButton.setEnabled(false);
+				GUIDriver.cash.btnNewButton_1.setEnabled(false);
+				GUIDriver.cash.btnNewButton_2.setEnabled(false);
+				GUIDriver.cash.btnNewButton_3.setEnabled(false);
+				GUIDriver.cash.btnNewButton_4.setEnabled(false);
+				GUIDriver.cash.btnNewButton_5.setEnabled(false);
+				GUIDriver.cash.btnNewButton_6.setEnabled(false);
+				GUIDriver.cash.btnNewButton_7.setEnabled(false);
+				GUIDriver.cash.btnNewButton_8.setEnabled(false);
+				GUIDriver.cash.btnNewButton_9.setEnabled(false);
+				GUIDriver.cash.btnNewButton_10.setEnabled(true);
+			}
+			
+			GUIDriver.cash.lblNewLabel_2.setText(GUIDriver.controlSoftware.shoppingCart.getTotalPayment().toString());
+			GUIDriver.cash.lblNewLabel_3.setText(GUIDriver.controlSoftware.shoppingCart.getTotalPayment().toString());
+			GUIDriver.cash.balance = GUIDriver.controlSoftware.shoppingCart.getTotalPayment();
+			
+			GUIDriver.goToScreen("cash");
 		}
 	
 	

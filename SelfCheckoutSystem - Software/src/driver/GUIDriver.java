@@ -1,6 +1,10 @@
 package driver;
 
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseMotionAdapter;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.Currency;
 import java.util.Map;
 
@@ -21,7 +25,7 @@ import controlSoftware.ControlSoftware;
 import controlSoftware.PLUCodedItemDatabase;
 import panels.*;
 
-public class CommandLineDriver {
+public class GUIDriver {
 	
 	public static JFrame mainFrame;
 	
@@ -37,21 +41,24 @@ public class CommandLineDriver {
 	
 	public static  ThankYouForShoppingScreen thank;
 	public static  AttendantMenuScreen attendant;
-	
 	public static ControlSoftware controlSoftware;
-
 	public static WelcomeScreen welcome;
 	public static MembershipScreen membership;
+	public static CardSelectMethodScreen selectmethod;
+	public static TapCardScreen tap;
+	public static SwipeCardScreen swipe;
+	public static ShutDownScreen shutdown;
+	
 	public static Barcode b1 = new Barcode("1111");
-    public static BarcodedItem bItem = new BarcodedItem(b1, 5);
+    public static BarcodedItem bItem = new BarcodedItem(b1, 20);
     public static Barcode b2 = new Barcode("2222");
-    public static BarcodedItem bItem2 = new BarcodedItem(b2, 5);
+    public static BarcodedItem bItem2 = new BarcodedItem(b2, 20);
     public static Barcode b3 = new Barcode("3333");
-    public static BarcodedItem bItem3 = new BarcodedItem(b3, 5);
+    public static BarcodedItem bItem3 = new BarcodedItem(b3, 20);
     public static Barcode b4 = new Barcode("4444");
-    public static BarcodedItem bItem4 = new BarcodedItem(b4, 5);
+    public static BarcodedItem bItem4 = new BarcodedItem(b4, 20);
     public static Barcode b5 = new Barcode("5555");
-    public static BarcodedItem bItem5 = new BarcodedItem(b5, 5);
+    public static BarcodedItem bItem5 = new BarcodedItem(b5, 20);
     
    
     public static PriceLookupCode plucode1 = new PriceLookupCode("4011"); 
@@ -63,11 +70,14 @@ public class CommandLineDriver {
     
     public static BlockStation blockStation;
     public static boolean isBlocked = false;
+    public static int x;
+    public static int y;
 	
-	
+
 	public static void main(String[] args) {
         System.out.println("Self-Checkout Station turning on...");
         System.out.println("Initializing Control Software v.1......");
+       
         
         /*===============================================================
          *                INITIALIZE PRODUCT DATABASE
@@ -91,11 +101,11 @@ public class CommandLineDriver {
         
       //  Barcode b4 = new Barcode("4444");
       //  BarcodedItem bItem4 = new BarcodedItem(b4, 5);
-        BarcodedProduct bp4 = new BarcodedProduct(b4, "Wagyu Beef", new BigDecimal(50.00));
+        BarcodedProduct bp4 = new BarcodedProduct(b4, "WagyuBeef", new BigDecimal(50.00));
         
      //   Barcode b5 = new Barcode("5555");
     //    BarcodedItem bItem5 = new BarcodedItem(b5, 5);
-        BarcodedProduct bp5 = new BarcodedProduct(b5, "500 Year Old Wine", new BigDecimal(52.00));
+        BarcodedProduct bp5 = new BarcodedProduct(b5, "500YearOldWine", new BigDecimal(52.00));
         
         
         barcodedItemDatabase.put(b1, bItem);
@@ -136,13 +146,11 @@ public class CommandLineDriver {
         // Initialize Control Software
         final Currency c1 = Currency.getInstance("CAD");
     	final int[] banknoteDenominations = new int[]{5, 10, 20, 50, 100};
-    	final BigDecimal[] coinDenominations = new BigDecimal[] {new BigDecimal(0.05), new BigDecimal(0.10), new BigDecimal(0.25), new BigDecimal(1.00), new BigDecimal(2.00)};
+    	final BigDecimal[] coinDenominations = new BigDecimal[] {new BigDecimal(0.05).setScale(2, RoundingMode.HALF_UP), new BigDecimal(0.10).setScale(2, RoundingMode.HALF_UP), new BigDecimal(0.25).setScale(2, RoundingMode.HALF_UP), new BigDecimal(1.00).setScale(2, RoundingMode.HALF_UP), new BigDecimal(2.00).setScale(2, RoundingMode.HALF_UP)};
     	final int scaleMaximumWeight = 500; // Don't know the units of the scale, will figure out later
     	final int scaleSensitivity = 1; // Don't know the units also
         controlSoftware = new ControlSoftware(c1, banknoteDenominations, coinDenominations, scaleMaximumWeight, scaleSensitivity);
-        
         blockStation = new BlockStation(controlSoftware.selfCheckout);
-        
         System.out.println("Self-checkout is ready! Scan your item...");
         
         /*===============================================================
@@ -210,6 +218,12 @@ public class CommandLineDriver {
         welcome = new WelcomeScreen();
         membership = new MembershipScreen();
         
+        
+        selectmethod = new CardSelectMethodScreen();
+        tap = new TapCardScreen();
+        swipe = new SwipeCardScreen();
+        shutdown = new ShutDownScreen();
+        
         mainFrame = controlSoftware.selfCheckout.screen.getFrame();
         mainFrame.setVisible(true);
         mainFrame.setSize(600,500);
@@ -218,12 +232,25 @@ public class CommandLineDriver {
        
         controlSoftware.selfCheckout.screen.setVisible(true);
         
-       
+        mainFrame.addMouseListener(new MouseAdapter() {
+            public void mousePressed(MouseEvent e) {
+                    x = e.getX();
+                    y = e.getY();
+            }
+        });
+        mainFrame.addMouseMotionListener(new MouseMotionAdapter() {
+            public void mouseDragged(MouseEvent e) {
+                    int left = mainFrame.getLocation().x;
+                    int top = mainFrame.getLocation().y;
+                    mainFrame.setLocation(left + e.getX() - x, top + e.getY() - y);
+            }
+        });
         
         
 	}
 	
 	public static void goToScreen(String idx) {
+		
 		if (idx == "welcome") { 
 			mainFrame.setContentPane(welcome);
 			mainFrame.pack();
@@ -271,7 +298,23 @@ public class CommandLineDriver {
 			mainFrame.setContentPane(plulookup);
 			mainFrame.pack();
 		}
+		if (idx =="selectmethod") {
+			mainFrame.setContentPane(selectmethod);
+			mainFrame.pack();
+		}
+		if (idx =="tap") {
+			mainFrame.setContentPane(tap);
+			mainFrame.pack();
+		}
+		if (idx =="swipe") {
+			mainFrame.setContentPane(swipe);
+			mainFrame.pack();
+		}
 		
-		
+		if (idx == "shutdown") {
+			
+			mainFrame.setContentPane(shutdown);
+			mainFrame.pack();
+		}
 	}
 }

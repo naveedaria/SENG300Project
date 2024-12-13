@@ -4,9 +4,6 @@ import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JLabel;
 import javax.swing.JButton;
-import java.awt.GridBagLayout;
-import java.awt.GridBagConstraints;
-import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -17,7 +14,7 @@ import javax.swing.LayoutStyle.ComponentPlacement;
 import org.lsmr.selfcheckout.Barcode;
 
 import controlSoftware.Receipt;
-import driver.CommandLineDriver;
+import driver.GUIDriver;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JTextArea;
@@ -30,11 +27,15 @@ public class MainScreen extends JPanel {
 	private JTextField txtEnterYourBarcode;
 	public static JTextArea totalArea;
 	public static JList itemList;
+
+	private String barScanned;
+
 	public static JLabel status;
 	public static JLabel inkLabel;
 	public static JLabel paperLabel;
 	// Randome level initialized for the levels
 	public static int inkLevel = 100, paperLevel = 100;
+
 
 	/**
 	 * Create the panel.
@@ -48,7 +49,7 @@ public class MainScreen extends JPanel {
 		
 		totalArea = new JTextArea();
 		totalArea.setFont(new Font("Lucida Grande", Font.PLAIN, 20));
-		totalArea.setText(CommandLineDriver.controlSoftware.paymentTotal.toString());
+		totalArea.setText(GUIDriver.controlSoftware.paymentTotal.toString());
 		totalArea.setEditable(false);
 		txtEnterYourBarcode = new JTextField();
 		txtEnterYourBarcode.setText("Enter your barcode and press \"Scan Barcode\"...");
@@ -57,34 +58,31 @@ public class MainScreen extends JPanel {
 		JLabel lblNewLabel = new JLabel("Total:");
 		lblNewLabel.setFont(new Font("Lucida Grande", Font.PLAIN, 20));
 		
-		JLabel lblNewLabel_1 = new JLabel("Scanner:");
-		
 		JButton scanButton = new JButton("Scan Barcode");
 		
 		JLabel lblNewLabel_2 = new JLabel("Scan & Bag");
 		lblNewLabel_2.setFont(new Font("Lucida Grande", Font.PLAIN, 32));
 		
-		JLabel announcementsLabel = new JLabel("     ");
-		
 		JButton lookupButton = new JButton("Look Up Item");
 		
 		JButton bagItemButton = new JButton("Bag Item");
 		
-		JButton skipBaggingBUtton = new JButton("Skip Bagging");
+		JButton skipBaggingButton = new JButton("Skip Bagging");
 		
 		JButton pluCodeButton = new JButton("Enter PLU Code");
 		
 		JButton attendantButton = new JButton("Call Attendant");
 		
-		
+		JLabel announcementsLabel = new JLabel("     ");
+		JLabel lblNewLabel_1 = new JLabel("Scanner:");
 		JButton removeItemButton = new JButton("Remove Item");
 		
 		// Status label for blocked/unblocked
 		status = new JLabel();
-		status.setText("Is Blocked: " + CommandLineDriver.isBlocked);
+		status.setText("Is Blocked: " + GUIDriver.isBlocked);
 		
 		// If station is blocked status msg
-		if(CommandLineDriver.isBlocked) {
+		if(GUIDriver.isBlocked) {
 			status.setForeground(Color.red);
 			
 			status.setText("Station state: Blocked");
@@ -120,11 +118,9 @@ public class MainScreen extends JPanel {
 			paperLabel.setForeground(Color.red);
 		}
 		
-		
-		
 		GroupLayout groupLayout = new GroupLayout(this);
 		groupLayout.setHorizontalGroup(
-			groupLayout.createParallelGroup(Alignment.TRAILING)
+			groupLayout.createParallelGroup(Alignment.LEADING)
 				.addGroup(groupLayout.createSequentialGroup()
 					.addGap(52)
 					.addGroup(groupLayout.createParallelGroup(Alignment.LEADING, false)
@@ -132,17 +128,17 @@ public class MainScreen extends JPanel {
 							.addComponent(lblNewLabel_1)
 							.addPreferredGap(ComponentPlacement.RELATED)
 							.addComponent(txtEnterYourBarcode))
-						.addComponent(itemList, GroupLayout.DEFAULT_SIZE, 357, Short.MAX_VALUE)
+						.addComponent(itemList, Alignment.LEADING, GroupLayout.DEFAULT_SIZE, 357, Short.MAX_VALUE)
 						.addComponent(lblNewLabel, GroupLayout.PREFERRED_SIZE, 72, GroupLayout.PREFERRED_SIZE)
-						.addComponent(totalArea, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-					.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
+						.addComponent(totalArea, Alignment.LEADING))
+					.addGroup(groupLayout.createParallelGroup(Alignment.TRAILING, false)
 						.addGroup(groupLayout.createSequentialGroup()
 							.addGap(6)
 							.addComponent(scanButton)
 							.addPreferredGap(ComponentPlacement.RELATED, 214, Short.MAX_VALUE)
 							.addComponent(bagItemButton, GroupLayout.PREFERRED_SIZE, 89, GroupLayout.PREFERRED_SIZE)
 							.addPreferredGap(ComponentPlacement.RELATED)
-							.addComponent(skipBaggingBUtton))
+							.addComponent(skipBaggingButton))
 						.addGroup(groupLayout.createSequentialGroup()
 							.addPreferredGap(ComponentPlacement.UNRELATED)
 							.addGroup(groupLayout.createParallelGroup(Alignment.TRAILING)
@@ -163,7 +159,7 @@ public class MainScreen extends JPanel {
 									.addGroup(Alignment.LEADING, groupLayout.createSequentialGroup()
 											.addGap(18)
 											.addComponent(status, GroupLayout.PREFERRED_SIZE, 155, GroupLayout.PREFERRED_SIZE)))
-					
+
 					.addGap(24))
 				.addGroup(groupLayout.createSequentialGroup()
 					.addContainerGap(441, Short.MAX_VALUE)
@@ -171,12 +167,12 @@ public class MainScreen extends JPanel {
 					.addGap(273))
 		);
 		groupLayout.setVerticalGroup(
-			groupLayout.createParallelGroup(Alignment.LEADING)
+			groupLayout.createParallelGroup(Alignment.TRAILING)
 				.addGroup(groupLayout.createSequentialGroup()
 					.addContainerGap()
 					.addComponent(lblNewLabel_2, GroupLayout.PREFERRED_SIZE, 42, GroupLayout.PREFERRED_SIZE)
 					.addGap(18)
-					.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
+					.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE, false)
 						.addGroup(groupLayout.createSequentialGroup()
 							.addComponent(itemList, GroupLayout.PREFERRED_SIZE, 373, GroupLayout.PREFERRED_SIZE)
 							.addPreferredGap(ComponentPlacement.UNRELATED)
@@ -186,14 +182,14 @@ public class MainScreen extends JPanel {
 							.addGap(235)
 							.addComponent(inkLabel)
 							.addGap(16)
-							.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
+							.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
 								.addComponent(status)
 								.addComponent(paperLabel))
 							.addGap(14)
 							.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
 								.addComponent(removeItemButton, GroupLayout.PREFERRED_SIZE, 41, GroupLayout.PREFERRED_SIZE)
 								.addComponent(attendantButton, GroupLayout.PREFERRED_SIZE, 43, GroupLayout.PREFERRED_SIZE))
-							.addPreferredGap(ComponentPlacement.RELATED, 311, Short.MAX_VALUE)
+							.addGap(14)
 							.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
 								.addComponent(pluCodeButton, GroupLayout.PREFERRED_SIZE, 47, GroupLayout.PREFERRED_SIZE)
 								.addComponent(lookupButton, GroupLayout.PREFERRED_SIZE, 46, GroupLayout.PREFERRED_SIZE))))
@@ -206,11 +202,12 @@ public class MainScreen extends JPanel {
 						.addComponent(lblNewLabel_1)
 						.addComponent(txtEnterYourBarcode, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
 						.addComponent(scanButton)
-						.addComponent(skipBaggingBUtton)
+						.addComponent(skipBaggingButton)
 						.addComponent(bagItemButton))
 					.addGap(20))
 		);
 		setLayout(groupLayout);
+		
 		//Step 3: Then add the listener to the button LIKE THIS
 		nextButton.addActionListener(new GotoNextScreen());
 		attendantButton.addActionListener(new GotoAttendantScreen());
@@ -218,28 +215,34 @@ public class MainScreen extends JPanel {
 		pluCodeButton.addActionListener(new GoToPLUScreen());
 		scanButton.addActionListener(new ScanItem());
 		removeItemButton.addActionListener(new RemoveItem());
-		
+
+		bagItemButton.addActionListener(new BagItem());
+		skipBaggingButton.addActionListener(new AttendantBagItem());
 		txtEnterYourBarcode.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 barcodeFieldMouseClicked(evt);
             }
         });
-		itemList.setListData(Receipt.printReceipt(CommandLineDriver.controlSoftware));
+		itemList.setListData(Receipt.printReceipt(GUIDriver.controlSoftware));
 	}
 	//Step 2: if you have a button that you want to do something, you need to make an action listener LIKE THIS
+	
+	
+	
+	
 	private class GotoNextScreen implements ActionListener{
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			if(!CommandLineDriver.isBlocked){
+			if(!GUIDriver.isBlocked){
 				// TODO Auto-generated method stub
 				String bag = showBagsScreen();
 				
 				int bagNum = Integer.parseInt(bag);
-				CommandLineDriver.controlSoftware.plasticBagsUsed(bagNum);
+				GUIDriver.controlSoftware.plasticBagsUsed(bagNum);
 				updateTransactionFields();
 				
-				CommandLineDriver.goToScreen("pay");
+				GUIDriver.goToScreen("pay");
 			}
 			
 		}
@@ -250,9 +253,9 @@ public class MainScreen extends JPanel {
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			// TODO Auto-generated method stub
-			if(!CommandLineDriver.isBlocked){
+			if(!GUIDriver.isBlocked){
 				LookupItemScreen.flag = "main";
-				CommandLineDriver.goToScreen("lookup");
+				GUIDriver.goToScreen("lookup");
 			}
 			
 		}
@@ -264,8 +267,8 @@ public class MainScreen extends JPanel {
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			// TODO Auto-generated method stub
-			if(!CommandLineDriver.isBlocked){
-				CommandLineDriver.goToScreen("plulookup");
+			if(!GUIDriver.isBlocked){
+				GUIDriver.goToScreen("plulookup");
 			}
 			
 		}
@@ -278,17 +281,15 @@ public class MainScreen extends JPanel {
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			// TODO Auto-generated method stub
-			if(!CommandLineDriver.isBlocked){
+		
 				boolean approved = showLoginScreen();
 				if(approved) {
 					
 					LookupItemScreen.flag = "attendant";
-					CommandLineDriver.goToScreen("attendant");
+					GUIDriver.goToScreen("attendant");
 				} else {
 					showIncorrectMessage();
 				}
-			
-			}
 		}
 		
 	}
@@ -310,7 +311,7 @@ public class MainScreen extends JPanel {
                 );
 		
 		if(option == JOptionPane.OK_OPTION) {
-			app = CommandLineDriver.controlSoftware.stationControl.logIn(user.getText().trim(), String.valueOf(pwd.getPassword()));
+			app = GUIDriver.controlSoftware.stationControl.logIn(user.getText().trim(), String.valueOf(pwd.getPassword()));
 		}
 		
 		return app;
@@ -345,9 +346,9 @@ public class MainScreen extends JPanel {
 	
 	public static void updateTransactionFields() {
 		
-		double totalAmt = CommandLineDriver.controlSoftware.shoppingCart.getTotalPayment().doubleValue();
+		double totalAmt = GUIDriver.controlSoftware.shoppingCart.getTotalPayment().doubleValue();
 		totalArea.setText(String.format("$%.2f", totalAmt));
-		itemList.setListData(Receipt.printReceipt(CommandLineDriver.controlSoftware));
+		itemList.setListData(Receipt.printReceipt(GUIDriver.controlSoftware));
 		
 	}
 	
@@ -356,15 +357,32 @@ public class MainScreen extends JPanel {
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			// TODO Auto-generated method stub
-			if(!CommandLineDriver.isBlocked){
-				String bar = txtEnterYourBarcode.getText();
-				Barcode b = new Barcode(bar);
-				CommandLineDriver.controlSoftware.scanProduct(b, 1);
-				updateTransactionFields();
-				txtEnterYourBarcode.setText("Enter your barcode and press \"Scan Barcode\"...");
+
+			
+			
+
+			if(!GUIDriver.isBlocked){
+				if(!GUIDriver.controlSoftware.scanned) {
+					String bar = txtEnterYourBarcode.getText();
+					barScanned = bar;
+					Barcode b = new Barcode(bar);
+					GUIDriver.controlSoftware.scanProduct(b, 1);
+					updateTransactionFields();
+					txtEnterYourBarcode.setText("Enter your barcode and press \"Scan Barcode\"...");
+				} else {
+					displayScanError();
+				}
 			}
+
 		}
 		
+	}
+	
+	private void displayScanError() {
+		JOptionPane.showMessageDialog(this,
+			    "The scanner has been temporarily disabled until the item has been bagged. Please bag the item or allow an attendant to approve it.",
+			    "Scanner Disabled",
+			    JOptionPane.WARNING_MESSAGE);
 	}
 	
 	private class RemoveItem implements ActionListener{
@@ -372,14 +390,15 @@ public class MainScreen extends JPanel {
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			// TODO Auto-generated method stub
-			if(!CommandLineDriver.isBlocked){
+
+			if(!GUIDriver.isBlocked){
 				int idx = itemList.getSelectedIndex();
-				if(idx > 0) {
+				if(idx >= 0) {
 					boolean app = showLoginScreen();
 					if(app) {
 						String el = (String)itemList.getModel().getElementAt(idx);
 						System.out.println(el);
-						Receipt.getItemFromReceipt(el, CommandLineDriver.controlSoftware);
+						Receipt.getItemFromReceipt(el, GUIDriver.controlSoftware);
 						updateTransactionFields();
 					} else {
 						showIncorrectMessage();
@@ -397,6 +416,57 @@ public class MainScreen extends JPanel {
 			    "No item has been selected, please select an item and try again.",
 			    "No Item Selected",
 			    JOptionPane.WARNING_MESSAGE);
+	}
+	
+	private class BagItem implements ActionListener{
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			// TODO Auto-generated method stub
+			if(GUIDriver.controlSoftware.scanned) {
+				try {
+					GUIDriver.controlSoftware.addToBaggingArea(new Barcode(barScanned));
+				} catch (Exception e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+			} else {
+				showBaggingErrorScreen();
+			}
+			
+		}
+		
+	}
+	
+	private void showBaggingErrorScreen() {
+		JOptionPane.showMessageDialog(this,
+			    "No item has been scanned, please select an item and try again.",
+			    "No Item Scanned",
+			    JOptionPane.WARNING_MESSAGE);
+	}
+	
+	private class AttendantBagItem implements ActionListener{
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			// TODO Auto-generated method stub
+			boolean a = showLoginScreen();
+			if(a) {
+				if(GUIDriver.controlSoftware.scanned) {
+					try {
+						GUIDriver.controlSoftware.addToBaggingArea(new Barcode(barScanned));
+					} catch (Exception e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+				} else {
+					showBaggingErrorScreen();
+				}
+			} else {
+				showIncorrectMessage();
+			}
+		}
+		
 	}
 }
 

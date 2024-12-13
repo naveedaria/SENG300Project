@@ -14,7 +14,7 @@ import java.awt.Font;
 import javax.swing.JButton;
 import javax.swing.LayoutStyle.ComponentPlacement;
 
-import driver.CommandLineDriver;
+import driver.GUIDriver;
 
 import java.awt.Color;
 import javax.swing.JPopupMenu;
@@ -85,7 +85,7 @@ public class WelcomeScreen extends JPanel {
 	private class GotoMembershipScreen implements ActionListener{
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			CommandLineDriver.goToScreen("membership");
+			GUIDriver.goToScreen("membership");
 		}
 	}
 

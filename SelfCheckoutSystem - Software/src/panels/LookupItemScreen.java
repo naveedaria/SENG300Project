@@ -13,7 +13,7 @@ import javax.swing.JLabel;
 import javax.swing.JTextField;
 import javax.swing.LayoutStyle.ComponentPlacement;
 
-import driver.CommandLineDriver;
+import driver.GUIDriver;
 import javax.swing.JScrollPane;
 
 import javax.swing.JButton;
@@ -39,11 +39,11 @@ public class LookupItemScreen extends JPanel {
 		
 		DefaultListModel<String> listModel = new DefaultListModel<>();
 		
-		listModel.addElement(CommandLineDriver.controlSoftware.shoppingCart.getDescriptionOfBarcodedProduct(CommandLineDriver.bItem));
-        listModel.addElement(CommandLineDriver.controlSoftware.shoppingCart.getDescriptionOfBarcodedProduct(CommandLineDriver.bItem2));
-        listModel.addElement(CommandLineDriver.controlSoftware.shoppingCart.getDescriptionOfBarcodedProduct(CommandLineDriver.bItem3));
-        listModel.addElement(CommandLineDriver.controlSoftware.shoppingCart.getDescriptionOfBarcodedProduct(CommandLineDriver.bItem4));
-        listModel.addElement(CommandLineDriver.controlSoftware.shoppingCart.getDescriptionOfBarcodedProduct(CommandLineDriver.bItem5));
+		listModel.addElement(GUIDriver.controlSoftware.shoppingCart.getDescriptionOfBarcodedProduct(GUIDriver.bItem));
+        listModel.addElement(GUIDriver.controlSoftware.shoppingCart.getDescriptionOfBarcodedProduct(GUIDriver.bItem2));
+        listModel.addElement(GUIDriver.controlSoftware.shoppingCart.getDescriptionOfBarcodedProduct(GUIDriver.bItem3));
+        listModel.addElement(GUIDriver.controlSoftware.shoppingCart.getDescriptionOfBarcodedProduct(GUIDriver.bItem4));
+        listModel.addElement(GUIDriver.controlSoftware.shoppingCart.getDescriptionOfBarcodedProduct(GUIDriver.bItem5));
 
         itemLst = new JList<>(listModel);
         add(new JScrollPane(itemLst));
@@ -106,7 +106,7 @@ public class LookupItemScreen extends JPanel {
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			// TODO Auto-generated method stub
-			CommandLineDriver.goToScreen(flag);
+			GUIDriver.goToScreen(flag);
 			
 		}
 		
@@ -117,7 +117,7 @@ public class LookupItemScreen extends JPanel {
 		public void actionPerformed(ActionEvent e) {
 			if(textField.getText().equalsIgnoreCase("Banana")) {
 				
-				CommandLineDriver.controlSoftware.scanProduct(CommandLineDriver.b1, 1);
+				GUIDriver.controlSoftware.scanProduct(GUIDriver.b1, 1);
 				MainScreen.updateTransactionFields();
 				textField.setText("Item added succsessfully!");
 				
@@ -126,7 +126,7 @@ public class LookupItemScreen extends JPanel {
 			
 			else if(textField.getText().equalsIgnoreCase("Milk")) {
 				
-				CommandLineDriver.controlSoftware.scanProduct(CommandLineDriver.b2, 1);
+				GUIDriver.controlSoftware.scanProduct(GUIDriver.b2, 1);
 				MainScreen.updateTransactionFields();
 				textField.setText("Item added succsessfully!");
 				
@@ -135,7 +135,7 @@ public class LookupItemScreen extends JPanel {
 			
 			else if(textField.getText().equalsIgnoreCase("Cereal")) {
 				
-				CommandLineDriver.controlSoftware.scanProduct(CommandLineDriver.b3, 1);
+				GUIDriver.controlSoftware.scanProduct(GUIDriver.b3, 1);
 				MainScreen.updateTransactionFields();
 				textField.setText("Item added succsessfully!");
 				
@@ -143,18 +143,18 @@ public class LookupItemScreen extends JPanel {
 			}
 
 			
-			else if(textField.getText().equalsIgnoreCase("Wagyu Beef")) {
+			else if(textField.getText().equalsIgnoreCase("Wagyu Beef")||textField.getText().equalsIgnoreCase("WagyuBeef")) {
 				
-				CommandLineDriver.controlSoftware.scanProduct(CommandLineDriver.b4, 1);
+				GUIDriver.controlSoftware.scanProduct(GUIDriver.b4, 1);
 				MainScreen.updateTransactionFields();
 				textField.setText("Item added succsessfully!");
 				
 				
 			}
 
-			else if(textField.getText().equalsIgnoreCase("500 Year Old Wine")) {
+			else if(textField.getText().equalsIgnoreCase("500 Year Old Wine") || textField.getText().equalsIgnoreCase("500YearOldWine")) {
 				
-				CommandLineDriver.controlSoftware.scanProduct(CommandLineDriver.b5, 1);
+				GUIDriver.controlSoftware.scanProduct(GUIDriver.b5, 1);
 				MainScreen.updateTransactionFields();
 				textField.setText("Item added succsessfully!");
 				
